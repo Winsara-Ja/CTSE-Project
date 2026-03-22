@@ -15,12 +15,9 @@ const simulatePaymentProcessing = async (method, amount) => {
   // Simulate processing delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  // Simulate 90% success rate
-  const isSuccess = Math.random() < 0.9;
-
   return {
-    success: isSuccess,
-    failureReason: isSuccess ? null : 'Payment declined by bank',
+    success: true,
+    failureReason: null,
   };
 };
 
