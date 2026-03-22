@@ -1,0 +1,47 @@
+name: Build and Push to ECR
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and push User Service
+        run: |
+          docker build -t shopzone-user-service ./user-service
+          docker tag shopzone-user-service:latest 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-user-service:latest
+          docker push 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-user-service:latest
+
+      - name: Build and push Product Service
+        run: |
+          docker build -t shopzone-product-service ./product-service
+          docker tag shopzone-product-service:latest 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-product-service:latest
+          docker push 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-product-service:latest
+
+      - name: Build and push Order Service
+        run: |
+          docker build -t shopzone-order-service ./order-service
+          docker tag shopzone-order-service:latest 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-order-service:latest
+          docker push 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-order-service:latest
+
+      - name: Build and push Payment Service
+        run: |
+          docker build -t shopzone-payment-service ./payment-service
+          docker tag shopzone-payment-service:latest 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-payment-service:latest
+          docker push 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-payment-service:latest

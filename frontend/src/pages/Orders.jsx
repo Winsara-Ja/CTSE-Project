@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { buildApiUrl } from '../config/api';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -13,7 +14,7 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch('http://localhost:5003/api/orders?limit=50', {
+      const res = await fetch(buildApiUrl('/api/orders?limit=50'), {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -30,7 +31,7 @@ const Orders = () => {
   const handleCancel = async (orderId) => {
     if (!confirm('Are you sure you want to cancel this order?')) return;
     try {
-      const res = await fetch(`http://localhost:5003/api/orders/${orderId}/cancel`, {
+      const res = await fetch(buildApiUrl(`/api/orders/${orderId}/cancel`), {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       });

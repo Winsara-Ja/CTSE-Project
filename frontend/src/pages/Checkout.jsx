@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { buildApiUrl } from '../config/api';
 
 const Checkout = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
@@ -32,7 +33,7 @@ const Checkout = () => {
 
     try {
       // Step 1: Create order via Order Service
-      const orderRes = await fetch('http://localhost:5003/api/orders', {
+      const orderRes = await fetch(buildApiUrl('/api/orders'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +57,7 @@ const Checkout = () => {
       }
 
       // Step 2: Process payment via Payment Service
-      const paymentRes = await fetch('http://localhost:5004/api/payments', {
+      const paymentRes = await fetch(buildApiUrl('/api/payments'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

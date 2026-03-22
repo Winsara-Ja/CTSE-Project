@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { buildApiUrl } from '../config/api';
 
 const CATEGORY_ICONS = {
   electronics: '💻',
@@ -27,7 +28,7 @@ const Products = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let url = 'http://localhost:5002/api/products?limit=50';
+      let url = buildApiUrl('/api/products?limit=50');
       if (category) url += `&category=${category}`;
       if (search) url += `&search=${search}`;
 
