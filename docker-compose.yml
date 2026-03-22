@@ -1,0 +1,139 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "80:80"
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+      - payment-service
+    networks:
+      - shopzone-network
+    restart: unless-stopped
+
+  # User Service
+  user-service:
+    build: ./user-service
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - MONGODB_URI=mongodb://mongo-users:27017/shopzone-users
+      - JWT_SECRET=shopzone_jwt_secret_key_2024
+      - JWT_EXPIRE=24h
+      - NODE_ENV=development
+    depends_on:
+      - mongo-users
+    networks:
+      - shopzone-network
+    restart: unless-stopped
+
+  # Product Service
+  product-service:
+    build: ./product-service
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+      - MONGODB_URI=mongodb://mongo-products:27017/shopzone-products
+      - USER_SERVICE_URL=http://user-service:5001
+      - NODE_ENV=development
+    depends_on:
+      - mongo-products
+      - user-service
+    networks:
+      - shopzone-network
+    restart: unless-stopped
+
+  # Order Service
+  order-service:
+    build: ./order-service
+    ports:
+      - "5003:5003"
+    environment:
+      - PORT=5003
+      - MONGODB_URI=mongodb://mongo-orders:27017/shopzone-orders
+      - USER_SERVICE_URL=http://user-service:5001
+      - PRODUCT_SERVICE_URL=http://product-service:5002
+      - NODE_ENV=development
+    depends_on:
+      - mongo-orders
+      - user-service
+      - product-service
+    networks:
+      - shopzone-network
+    restart: unless-stopped
+
+  # Payment Service
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "5004:5004"
+    environment:
+      - PORT=5004
+      - MONGODB_URI=mongodb://mongo-payments:27017/shopzone-payments
+      - USER_SERVICE_URL=http://user-service:5001
+      - ORDER_SERVICE_URL=http://order-service:5003
+      - NODE_ENV=development
+    depends_on:
+      - mongo-payments
+      - user-service
+      - order-service
+    networks:
+      - shopzone-network
+    restart: unless-stopped
+
+  # MongoDB instances (one per service - microservice pattern)
+  mongo-users:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-users-data:/data/db
+    networks:
+      - shopzone-network
+    restart: unless-stopped
+
+  mongo-products:
+    image: mongo:7
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-products-data:/data/db
+    networks:
+      - shopzone-network
+    restart: unless-stopped
+
+  mongo-orders:
+    image: mongo:7
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo-orders-data:/data/db
+    networks:
+      - shopzone-network
+    restart: unless-stopped
+
+  mongo-payments:
+    image: mongo:7
+    ports:
+      - "27020:27017"
+    volumes:
+      - mongo-payments-data:/data/db
+    networks:
+      - shopzone-network
+    restart: unless-stopped
+
+volumes:
+  mongo-users-data:
+  mongo-products-data:
+  mongo-orders-data:
+  mongo-payments-data:
+
+networks:
+  shopzone-network:
+    driver: bridge
