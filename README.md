@@ -47,7 +47,7 @@ A microservice-based e-commerce application built with the MERN stack (MongoDB, 
 - **Containerization**: Docker, Docker Compose
 - **CI/CD**: GitHub Actions
 - **SAST**: SonarCloud
-- **Cloud**: AWS ECS (Elastic Container Service)
+- **Cloud**: AWS ECS (Elastic Container Service), Amazon S3 Static Website Hosting
 - **Security**: Helmet.js, CORS, express-rate-limit, express-validator
 
 ## Getting Started
@@ -105,6 +105,56 @@ Each service has Swagger documentation:
 - Product Service: http://localhost:5002/api-docs
 - Order Service: http://localhost:5003/api-docs
 - Payment Service: http://localhost:5004/api-docs
+
+## AWS Deployment
+
+### Backend
+
+The backend services are deployed to AWS ECS Fargate and exposed through an Application Load Balancer using path-based routing:
+
+- `/api/users*` -> `user-service`
+- `/api/products*` -> `product-service`
+- `/api/orders*` -> `order-service`
+- `/api/payments*` -> `payment-service`
+
+### Frontend
+
+The frontend is intended to be deployed with Amazon S3 Static Website Hosting for the assignment demo. This keeps the frontend and backend on HTTP and avoids browser mixed-content errors.
+
+1. Copy the example file and set the backend base URL:
+
+```bash
+cd frontend
+cp .env.example .env
+```
+
+```env
+VITE_API_BASE_URL=http://shopzone-alb-1958040797.ap-south-1.elb.amazonaws.com
+```
+
+2. Build the frontend:
+
+```bash
+cd frontend
+npm ci
+npm run build
+```
+
+3. Create an S3 bucket, enable Static Website Hosting, and configure:
+
+- Index document: `index.html`
+- Error document: `index.html`
+
+4. Upload the contents of `frontend/dist/` to the bucket root.
+
+5. Add a public-read bucket policy for the website bucket.
+
+6. Open the S3 website endpoint and verify:
+
+- registration and login
+- product listing
+- order placement
+- payment flow
 
 ## Inter-Service Communication
 
