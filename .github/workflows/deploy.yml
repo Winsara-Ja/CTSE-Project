@@ -47,3 +47,10 @@ jobs:
           docker build -t shopzone-payment-service ./payment-service
           docker tag shopzone-payment-service:latest 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-payment-service:latest
           docker push 978163710249.dkr.ecr.ap-south-1.amazonaws.com/shopzone-payment-service:latest
+
+      - name: Deploy services to ECS
+        run: |
+          aws ecs update-service --cluster shopzone-cluster0 --service user-service --force-new-deployment
+          aws ecs update-service --cluster shopzone-cluster0 --service product-service --force-new-deployment
+          aws ecs update-service --cluster shopzone-cluster0 --service order-service --force-new-deployment
+          aws ecs update-service --cluster shopzone-cluster0 --service payment-service --force-new-deployment
