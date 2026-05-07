@@ -231,6 +231,11 @@ shopzone/
 | Student 3 | Order Service | Order processing & tracking |
 | Student 4 | Payment Service | Payment processing |
 
+
+git add .
+git commit -m "your message"
+git push origin main
+
 ## License
 
 This project is for educational purposes - SLIIT CTSE Assignment 2026.

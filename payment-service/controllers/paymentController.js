@@ -1,3 +1,5 @@
+// this is controller
+
 const Payment = require('../models/Payment');
 const axios = require('axios');
 const { validationResult } = require('express-validator');
