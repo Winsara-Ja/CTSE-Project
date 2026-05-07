@@ -129,7 +129,7 @@ cp .env.example .env
 ```
 
 ```env
-VITE_API_BASE_URL=http://shopzone-alb-1958040797.ap-south-1.elb.amazonaws.com
+VITE_API_BASE_URL=http://ctse-project-frontend-tharusha-2026.s3.ap-south-1.amazonaws.com/index.html
 ```
 
 2. Build the frontend:

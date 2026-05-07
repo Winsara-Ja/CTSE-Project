@@ -17,6 +17,7 @@ connectDB();
 
 const app = express();
 
+//add new comment
 // Security middleware
 app.use(helmet());
 app.use(cors());
